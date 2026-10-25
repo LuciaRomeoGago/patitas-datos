@@ -93,7 +93,24 @@ stock['stockDespues'] = stock.groupby('productoId').cantidad.cumsum() + stock.pr
 actual = stock.groupby('productoId').stockDespues.last()
 productos['stockActual'] = productos.id.map(actual).fillna(productos.stock).astype(int)
 productos['bajoMinimo'] = productos.stockActual <= productos.minimo
-stock['venceEn60'] = stock.vence.between(HOY, HOY + pd.Timedelta(days=60))
+# Lo que queda de cada lote al día de hoy: las ventas y los ajustes se llevan primero lo más viejo.
+stock['quedan'] = 0
+for pid, g in stock[stock.fecha <= HOY].groupby('productoId'):
+    lotes = [[None, int(productos.set_index('id').stock[pid])]]  # el stock inicial, sin lote
+    for i, mov in g.iterrows():
+        if mov.cantidad > 0:
+            lotes.append([i, int(mov.cantidad)])
+            continue
+        sale = -mov.cantidad
+        for lote in lotes:
+            usa = min(sale, lote[1])
+            lote[1] -= usa
+            sale -= usa
+    assert sum(q for _, q in lotes) == g.stockDespues.iloc[-1], f'los lotes de {pid} no suman el stock'
+    for i, queda in lotes:
+        if i is not None:
+            stock.loc[i, 'quedan'] = queda
+stock['venceEn60'] = (stock.quedan > 0) & stock.vence.between(HOY, HOY + pd.Timedelta(days=60))
 
 # ---- Caja y cierres ----
 caja['importe'] = caja.monto.where(caja.tipo != 'egreso', -caja.monto)  # con signo: los gastos restan
