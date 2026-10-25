@@ -1,0 +1,120 @@
+table h_stock
+	lineageTag: 487ca9ac-e450-4dc6-aa51-b68b93ff44e3
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: ad072700-6ba6-44ec-96df-8a67f93e5eda
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ef8a1d85-af9a-428c-ba40-79386d91fbc6
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column productoId
+		dataType: int64
+		formatString: 0
+		lineageTag: 205a2a01-9719-4758-90ed-d699942b0b05
+		summarizeBy: none
+		sourceColumn: productoId
+
+		annotation SummarizationSetBy = Automatic
+
+	column cantidad
+		dataType: int64
+		formatString: 0
+		lineageTag: 47829d66-ad75-4c18-85a1-e80fa110d340
+		summarizeBy: sum
+		sourceColumn: cantidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo
+		dataType: string
+		lineageTag: ccb123a8-b6e6-4316-b71d-ac219e87570d
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column detalle
+		dataType: string
+		lineageTag: 83fca765-50b8-4bfb-8205-132c02299ce9
+		summarizeBy: none
+		sourceColumn: detalle
+
+		annotation SummarizationSetBy = Automatic
+
+	column vence
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 55520d9c-3db5-41db-be4e-5ede5130aea1
+		summarizeBy: none
+		sourceColumn: vence
+
+		variation Variation
+			isDefault
+			relationship: c2ef3766-b357-4690-953e-8ed00992d48b
+			defaultHierarchy: LocalDateTable_a51c8dae-3ef2-42ac-9def-4531622d4c80.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column por
+		dataType: string
+		lineageTag: 26b547d2-d68a-47b7-b3cf-41207b8549eb
+		summarizeBy: none
+		sourceColumn: por
+
+		annotation SummarizationSetBy = Automatic
+
+	column stockDespues
+		dataType: int64
+		formatString: 0
+		lineageTag: 75399184-fd28-4c9c-9437-2559f7375d2b
+		summarizeBy: sum
+		sourceColumn: stockDespues
+
+		annotation SummarizationSetBy = Automatic
+
+	column quedan
+		dataType: int64
+		formatString: 0
+		lineageTag: d19b0b59-7ef9-441a-96f6-a9db7deb8aae
+		summarizeBy: sum
+		sourceColumn: quedan
+
+		annotation SummarizationSetBy = Automatic
+
+	column venceEn60
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: cc50e21d-f976-4b6c-a856-7c17fa7d2165
+		summarizeBy: none
+		sourceColumn: venceEn60
+
+		annotation SummarizationSetBy = Automatic
+
+	partition h_stock = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\h_stock.csv"),[Delimiter=";", Columns=11, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"id", Int64.Type}, {"fecha", type date}, {"productoId", Int64.Type}, {"cantidad", Int64.Type}, {"tipo", type text}, {"detalle", type text}, {"vence", type date}, {"por", type text}, {"stockDespues", Int64.Type}, {"quedan", Int64.Type}, {"venceEn60", type logical}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

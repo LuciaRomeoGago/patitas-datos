@@ -1,0 +1,86 @@
+table dim_producto
+	lineageTag: 3ff4a2df-25e6-4670-80d0-b6f6f1f8669e
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: e384b51b-e793-455e-8dbd-2ee5863a29a0
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column nombre
+		dataType: string
+		lineageTag: fc74156b-c23e-4a4c-86b0-943930523abf
+		summarizeBy: none
+		sourceColumn: nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column precio
+		dataType: int64
+		formatString: 0
+		lineageTag: f757ed71-25a7-4551-a03b-eae1da346d90
+		summarizeBy: sum
+		sourceColumn: precio
+
+		annotation SummarizationSetBy = Automatic
+
+	column stock
+		dataType: int64
+		formatString: 0
+		lineageTag: 3e239283-a2c7-485f-80c3-4b045a4c3b83
+		summarizeBy: sum
+		sourceColumn: stock
+
+		annotation SummarizationSetBy = Automatic
+
+	column minimo
+		dataType: int64
+		formatString: 0
+		lineageTag: 1c8c3ff1-b04c-4ba4-ab24-5c0523a1d3a7
+		summarizeBy: sum
+		sourceColumn: minimo
+
+		annotation SummarizationSetBy = Automatic
+
+	column duraDias
+		dataType: int64
+		formatString: 0
+		lineageTag: 67e7cfba-01bc-43a6-aed6-1968ea85ab28
+		summarizeBy: sum
+		sourceColumn: duraDias
+
+		annotation SummarizationSetBy = Automatic
+
+	column stockActual
+		dataType: int64
+		formatString: 0
+		lineageTag: 5811d4f7-ceea-4306-bf9e-9d1ca8a61de9
+		summarizeBy: sum
+		sourceColumn: stockActual
+
+		annotation SummarizationSetBy = Automatic
+
+	column bajoMinimo
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 9c0f661f-4593-40d7-86dd-6e6e0662aee2
+		summarizeBy: none
+		sourceColumn: bajoMinimo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_producto = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\dim_producto.csv"),[Delimiter=";", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"id", Int64.Type}, {"nombre", type text}, {"precio", Int64.Type}, {"stock", Int64.Type}, {"minimo", Int64.Type}, {"duraDias", Int64.Type}, {"stockActual", Int64.Type}, {"bajoMinimo", type logical}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

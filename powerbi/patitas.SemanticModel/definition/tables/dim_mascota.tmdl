@@ -1,0 +1,76 @@
+table dim_mascota
+	lineageTag: c0497c53-e694-4c20-912f-b530b2121b2d
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: 6c14fc86-3548-43e7-a70f-1491ca7f3899
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column clienteId
+		dataType: int64
+		formatString: 0
+		lineageTag: f24bca91-c4c2-4335-b64d-a30a3fb00af5
+		summarizeBy: none
+		sourceColumn: clienteId
+
+		annotation SummarizationSetBy = Automatic
+
+	column nombre
+		dataType: string
+		lineageTag: 0136f11a-88aa-44db-af65-05231b4a6bc2
+		summarizeBy: none
+		sourceColumn: nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column especie
+		dataType: string
+		lineageTag: 44d1a83e-b68c-4564-8bf1-0de08e13767a
+		summarizeBy: none
+		sourceColumn: especie
+
+		annotation SummarizationSetBy = Automatic
+
+	column edad
+		dataType: int64
+		formatString: 0
+		lineageTag: 44e40ced-99fc-44b6-9965-5a908d116856
+		summarizeBy: sum
+		sourceColumn: edad
+
+		annotation SummarizationSetBy = Automatic
+
+	column raza
+		dataType: string
+		lineageTag: fc321bed-3d0f-4410-9210-68cfdcacf313
+		summarizeBy: none
+		sourceColumn: raza
+
+		annotation SummarizationSetBy = Automatic
+
+	column peso
+		dataType: double
+		lineageTag: dc4dda95-d0f1-4da0-ad7f-2bb887899874
+		summarizeBy: sum
+		sourceColumn: peso
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition dim_mascota = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\dim_mascota.csv"),[Delimiter=";", Columns=7, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"id", Int64.Type}, {"clienteId", Int64.Type}, {"nombre", type text}, {"especie", type text}, {"edad", Int64.Type}, {"raza", type text}, {"peso", type number}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

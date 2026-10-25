@@ -1,0 +1,104 @@
+table h_ventas
+	lineageTag: c1c71b7f-ecac-428d-81da-e154a9401482
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: cd275535-e44c-4105-8358-0544cb19a5a5
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column clienteId
+		dataType: int64
+		formatString: 0
+		lineageTag: 30142274-63df-448c-84da-003d6e5617f3
+		summarizeBy: none
+		sourceColumn: clienteId
+
+		annotation SummarizationSetBy = Automatic
+
+	column productoId
+		dataType: int64
+		formatString: 0
+		lineageTag: 91e2010b-7d75-4fd8-8863-76548899f46b
+		summarizeBy: none
+		sourceColumn: productoId
+
+		annotation SummarizationSetBy = Automatic
+
+	column cantidad
+		dataType: int64
+		formatString: 0
+		lineageTag: a0ca900e-56b5-456e-bc3e-663251eb84f3
+		summarizeBy: sum
+		sourceColumn: cantidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 8946098c-9489-4067-bf66-e78b13a3cc86
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column pago
+		dataType: string
+		lineageTag: 4f4ee7a5-9629-4c70-bebb-bc18830c49d0
+		summarizeBy: none
+		sourceColumn: pago
+
+		annotation SummarizationSetBy = Automatic
+
+	column cobrada
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 2d064c94-fe7d-448e-8d3e-263ee524285f
+		summarizeBy: none
+		sourceColumn: cobrada
+
+		annotation SummarizationSetBy = Automatic
+
+	column importe
+		dataType: int64
+		formatString: 0
+		lineageTag: 4480eca3-862e-49fa-b7de-bacb792feab5
+		summarizeBy: sum
+		sourceColumn: importe
+
+		annotation SummarizationSetBy = Automatic
+
+	column diasDesdeAnterior
+		dataType: string
+		lineageTag: cf0ded23-db88-429f-94b4-8c29c3a88f7c
+		summarizeBy: none
+		sourceColumn: diasDesdeAnterior
+
+		annotation SummarizationSetBy = Automatic
+
+	column recompra
+		dataType: string
+		lineageTag: dd1501d4-eb56-468f-a052-d4179ef1b753
+		summarizeBy: none
+		sourceColumn: recompra
+
+		annotation SummarizationSetBy = Automatic
+
+	partition h_ventas = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\h_ventas.csv"),[Delimiter=";", Columns=10, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"id", Int64.Type}, {"clienteId", Int64.Type}, {"productoId", Int64.Type}, {"cantidad", Int64.Type}, {"fecha", type date}, {"pago", type text}, {"cobrada", type logical}, {"importe", Int64.Type}, {"diasDesdeAnterior", type text}, {"recompra", type text}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

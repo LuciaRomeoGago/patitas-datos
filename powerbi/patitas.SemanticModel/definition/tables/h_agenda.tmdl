@@ -1,0 +1,62 @@
+table h_agenda
+	lineageTag: 94a81ac8-2e47-4cbf-858a-5ec78d2c7cbc
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 768242b2-39b2-4a4c-b8c4-6532d192693e
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column vetId
+		dataType: int64
+		formatString: 0
+		lineageTag: 3ac86fc6-e8bc-42ec-b2e6-a293e51c3c0c
+		summarizeBy: none
+		sourceColumn: vetId
+
+		annotation SummarizationSetBy = Automatic
+
+	column minutosOcupados
+		dataType: int64
+		formatString: 0
+		lineageTag: c386eb45-8552-4d65-b77a-efd19a194d67
+		summarizeBy: sum
+		sourceColumn: minutosOcupados
+
+		annotation SummarizationSetBy = Automatic
+
+	column turnos
+		dataType: int64
+		formatString: 0
+		lineageTag: 5e27c90c-ea50-465c-8fd9-59e456b2e11e
+		summarizeBy: sum
+		sourceColumn: turnos
+
+		annotation SummarizationSetBy = Automatic
+
+	column minutosDisponibles
+		dataType: int64
+		formatString: 0
+		lineageTag: faeceb6c-2cf6-4ccb-b88c-aac83991671d
+		summarizeBy: sum
+		sourceColumn: minutosDisponibles
+
+		annotation SummarizationSetBy = Automatic
+
+	partition h_agenda = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\h_agenda.csv"),[Delimiter=";", Columns=5, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"fecha", type date}, {"vetId", Int64.Type}, {"minutosOcupados", Int64.Type}, {"turnos", Int64.Type}, {"minutosDisponibles", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

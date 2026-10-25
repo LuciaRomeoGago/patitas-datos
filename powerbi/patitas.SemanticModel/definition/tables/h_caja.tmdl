@@ -1,0 +1,105 @@
+table h_caja
+	lineageTag: ddbfee0f-393d-4f00-88f8-0403432b2ec6
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: 6a335223-f7a1-42a4-8141-f7f0a1c49270
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0f5e09e2-ed00-49d3-8c8a-19092af86f9e
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column hora
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 69a74b67-8314-49cf-8b71-6a3995740be8
+		summarizeBy: none
+		sourceColumn: hora
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column tipo
+		dataType: string
+		lineageTag: 16aa2d5e-88e5-420e-a09a-b8544af6c39f
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column concepto
+		dataType: string
+		lineageTag: 38cf5580-bd6c-42dd-b320-050655239d60
+		summarizeBy: none
+		sourceColumn: concepto
+
+		annotation SummarizationSetBy = Automatic
+
+	column monto
+		dataType: int64
+		formatString: 0
+		lineageTag: 763d05e7-b45a-4b05-a18e-00d55a4cad57
+		summarizeBy: sum
+		sourceColumn: monto
+
+		annotation SummarizationSetBy = Automatic
+
+	column medio
+		dataType: string
+		lineageTag: 4f1b564b-ccb7-4760-bf50-e84a292f1343
+		summarizeBy: none
+		sourceColumn: medio
+
+		annotation SummarizationSetBy = Automatic
+
+	column por
+		dataType: string
+		lineageTag: 7a02575f-2118-40a8-a8b4-3b99cc8a6391
+		summarizeBy: none
+		sourceColumn: por
+
+		annotation SummarizationSetBy = Automatic
+
+	column importe
+		dataType: int64
+		formatString: 0
+		lineageTag: 3f8047e9-51e1-4665-88f9-ee34049ead6b
+		summarizeBy: sum
+		sourceColumn: importe
+
+		annotation SummarizationSetBy = Automatic
+
+	column esCobro
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: edb090fc-952c-443c-b0c4-387993407840
+		summarizeBy: none
+		sourceColumn: esCobro
+
+		annotation SummarizationSetBy = Automatic
+
+	partition h_caja = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\h_caja.csv"),[Delimiter=";", Columns=10, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"id", Int64.Type}, {"fecha", type date}, {"hora", type time}, {"tipo", type text}, {"concepto", type text}, {"monto", Int64.Type}, {"medio", type text}, {"por", type text}, {"importe", Int64.Type}, {"esCobro", type logical}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

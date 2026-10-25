@@ -1,0 +1,72 @@
+table h_cierres
+	lineageTag: 729cad2d-e8ae-4be0-9877-0a7a5c7d860b
+
+	column fecha
+		dataType: dateTime
+		formatString: dd/mm
+		lineageTag: ed564510-78c4-4d9f-b58e-ab64d94bc4d2
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column hora
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: c0d7dd64-8e49-4092-b7aa-09d0cee8e07f
+		summarizeBy: none
+		sourceColumn: hora
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column esperado
+		dataType: int64
+		formatString: 0
+		lineageTag: 959983bd-a573-49dc-92ec-d25d420a4a91
+		summarizeBy: sum
+		sourceColumn: esperado
+
+		annotation SummarizationSetBy = Automatic
+
+	column contado
+		dataType: int64
+		formatString: 0
+		lineageTag: d795919b-24f6-42ae-89e2-076f930f0d49
+		summarizeBy: sum
+		sourceColumn: contado
+
+		annotation SummarizationSetBy = Automatic
+
+	column por
+		dataType: string
+		lineageTag: b802c37b-bc3a-4596-ade1-5c6c1a55f53b
+		summarizeBy: none
+		sourceColumn: por
+
+		annotation SummarizationSetBy = Automatic
+
+	column diferencia
+		dataType: int64
+		formatString: 0
+		lineageTag: ff694da1-6afa-4e03-bca2-f33c6fb82bad
+		summarizeBy: sum
+		sourceColumn: diferencia
+
+		annotation SummarizationSetBy = Automatic
+
+	partition h_cierres = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\h_cierres.csv"),[Delimiter=";", Columns=6, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"fecha", type date}, {"hora", type time}, {"esperado", Int64.Type}, {"contado", Int64.Type}, {"por", type text}, {"diferencia", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

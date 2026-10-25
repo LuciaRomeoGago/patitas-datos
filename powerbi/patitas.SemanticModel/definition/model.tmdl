@@ -1,0 +1,36 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-AR
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["dim_cliente","dim_fecha","dim_mascota","dim_producto","dim_veterinario","h_agenda","h_caja","h_cierres","h_esperas","h_stock","h_turnos","h_vacunas","h_ventas","Medidas"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table dim_cliente
+ref table dim_fecha
+ref table DateTableTemplate_4afc0351-f8be-440f-995b-35be7864997b
+ref table dim_mascota
+ref table dim_producto
+ref table dim_veterinario
+ref table h_agenda
+ref table h_caja
+ref table h_cierres
+ref table h_esperas
+ref table LocalDateTable_817ff322-ecb0-4802-9f72-4ea9e604ec0f
+ref table h_stock
+ref table LocalDateTable_a51c8dae-3ef2-42ac-9def-4531622d4c80
+ref table h_turnos
+ref table h_vacunas
+ref table LocalDateTable_68e33b19-9939-4330-8dda-bd892b2c4287
+ref table h_ventas
+ref table Medidas
+
+ref cultureInfo es-ES
+

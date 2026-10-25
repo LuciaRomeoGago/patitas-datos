@@ -1,0 +1,60 @@
+table dim_cliente
+	lineageTag: 06effe37-cf30-4155-93f7-37c39b747079
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: 5c84084d-a399-4ce6-8133-a084939db0c5
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column nombre
+		dataType: string
+		lineageTag: b3ac675f-4983-497e-8ddd-090961ad6e9b
+		summarizeBy: none
+		sourceColumn: nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column dni
+		dataType: int64
+		formatString: 0
+		lineageTag: 692b44ce-4211-4a79-912c-ec49576279e4
+		summarizeBy: sum
+		sourceColumn: dni
+
+		annotation SummarizationSetBy = Automatic
+
+	column telefono
+		dataType: string
+		lineageTag: bf48ac83-8d76-4b60-b992-3ff5504e78e5
+		summarizeBy: none
+		sourceColumn: telefono
+
+		annotation SummarizationSetBy = Automatic
+
+	column whatsapp
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: da48986f-4a33-427d-ab2f-032341663263
+		summarizeBy: none
+		sourceColumn: whatsapp
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_cliente = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\dim_cliente.csv"),[Delimiter=";", Columns=5, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"id", Int64.Type}, {"nombre", type text}, {"dni", Int64.Type}, {"telefono", type text}, {"whatsapp", type logical}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

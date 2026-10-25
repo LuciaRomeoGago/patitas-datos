@@ -1,0 +1,113 @@
+table dim_fecha
+	lineageTag: 56619de4-5919-40bd-a62c-5bc43b3548dd
+	dataCategory: Time
+
+	column fecha
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: 53f076ed-0127-4c56-8526-bc8d9f813351
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column anio
+		dataType: int64
+		formatString: 0
+		lineageTag: 9220ce3b-a173-468c-90a9-cb311b811377
+		summarizeBy: sum
+		sourceColumn: anio
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: int64
+		formatString: 0
+		lineageTag: ce340808-3e19-44cf-9f82-45b9dc970e1f
+		summarizeBy: sum
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column mesNombre
+		dataType: string
+		lineageTag: edf7cc7a-2a4d-4925-8788-8aa3e36e335b
+		summarizeBy: none
+		sourceColumn: mesNombre
+		sortByColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column anioMes
+		dataType: dateTime
+		formatString: mmm yyyy
+		lineageTag: 91230d2a-b748-4409-8063-5cef0eca5e00
+		summarizeBy: none
+		sourceColumn: anioMes
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column semana
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ff25f57c-efe8-47f3-a289-a0a48623f4d9
+		summarizeBy: none
+		sourceColumn: semana
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column diaSemana
+		dataType: int64
+		formatString: 0
+		lineageTag: c5ccc06e-665a-4556-b24b-3b209fb0cabd
+		summarizeBy: sum
+		sourceColumn: diaSemana
+
+		annotation SummarizationSetBy = Automatic
+
+	column diaNombre
+		dataType: string
+		lineageTag: fbd30e2a-5eca-42bc-9aca-bafc4cee8b2b
+		summarizeBy: none
+		sourceColumn: diaNombre
+		sortByColumn: diaSemana
+
+		annotation SummarizationSetBy = Automatic
+
+	column habil
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 85a9abfc-9701-493c-8214-034d17b46f43
+		summarizeBy: none
+		sourceColumn: habil
+
+		annotation SummarizationSetBy = Automatic
+
+	column pasado
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 145a0339-99a6-4a87-b0bf-7665222eba84
+		summarizeBy: none
+		sourceColumn: pasado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_fecha = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\dim_fecha.csv"),[Delimiter=";", Columns=10, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"fecha", type date}, {"anio", Int64.Type}, {"mes", Int64.Type}, {"mesNombre", type text}, {"anioMes", type date}, {"semana", type date}, {"diaSemana", Int64.Type}, {"diaNombre", type text}, {"habil", type logical}, {"pasado", type logical}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

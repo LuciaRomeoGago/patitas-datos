@@ -1,0 +1,38 @@
+// Medidas del tablero. Crealas en una tabla vacía llamada "Medidas" (Inicio → Especificar datos → Cargar).
+// Cada una: Nueva medida, pegar el texto. Al lado, el valor que tiene que dar para todo el año, para controlar.
+
+// ---------- Agenda (filtro de página: dim_fecha[pasado] = Verdadero) ----------
+Ocupación = DIVIDE ( SUM ( h_agenda[minutosOcupados] ), SUM ( h_agenda[minutosDisponibles] ) )   // 53,5 %
+Turnos atendidos = CALCULATE ( COUNTROWS ( h_turnos ), h_turnos[estado] = "atendido" )            // 2.527
+Demora promedio (min) = AVERAGE ( h_turnos[demora] )                                             // 2,7
+Llegan 15 min tarde o más =
+    DIVIDE (
+        CALCULATE ( COUNTROWS ( h_turnos ), h_turnos[demora] >= 15 ),
+        CALCULATE ( COUNTROWS ( h_turnos ), NOT ISBLANK ( h_turnos[demora] ) )
+    )                                                                                            // 18 %
+Anotados en lista de espera = COUNTROWS ( h_esperas )                                            // 33
+Avisados de la lista = DIVIDE ( CALCULATE ( COUNTROWS ( h_esperas ), h_esperas[avisada] = TRUE () ), [Anotados en lista de espera] )  // 39 %
+
+// ---------- Clínica ----------
+Vacunas aplicadas = COUNTROWS ( h_vacunas )                                                      // 625 con el filtro de página
+Vacunas para avisar = CALCULATE ( COUNTROWS ( h_vacunas ), h_vacunas[avisar] = TRUE (), REMOVEFILTERS ( dim_fecha ) )  // 131
+Consultas = COUNTROWS ( h_turnos )
+
+// ---------- Tienda y stock ----------
+Ventas = SUM ( h_ventas[importe] )                                                               // $ 57.260.100
+Unidades vendidas = SUM ( h_ventas[cantidad] )                                                   // 4.820
+Recompras tarde =
+    DIVIDE (
+        CALCULATE ( COUNTROWS ( h_ventas ), h_ventas[recompra] = "Tarde" ),
+        CALCULATE ( COUNTROWS ( h_ventas ), h_ventas[recompra] IN { "Tarde", "A tiempo" } )
+    )                                                                                            // 31 %
+Días sin stock = CALCULATE ( DISTINCTCOUNT ( h_stock[fecha] ), h_stock[stockDespues] = 0 )       // alimento 28, arena 28, pipeta 9, shampoo 6
+Productos bajo el mínimo = CALCULATE ( COUNTROWS ( dim_producto ), dim_producto[bajoMinimo] = TRUE () )  // 2
+Lotes por vencer en 60 días = CALCULATE ( COUNTROWS ( h_stock ), h_stock[venceEn60] = TRUE (), REMOVEFILTERS ( dim_fecha ) )  // 0
+
+// ---------- Caja ----------
+Cobrado = CALCULATE ( SUM ( h_caja[importe] ), h_caja[esCobro] = TRUE () )                       // $ 102.991.100
+Gastos = - CALCULATE ( SUM ( h_caja[importe] ), h_caja[tipo] = "egreso" )                        // $ 34.987.500
+Señas cobradas = CALCULATE ( SUM ( h_caja[importe] ), h_caja[tipo] = "sena" )                    // $ 6.860.000
+Cierres con diferencia = CALCULATE ( COUNTROWS ( h_cierres ), h_cierres[diferencia] <> 0 )      // 22
+Diferencia neta de caja = SUM ( h_cierres[diferencia] )                                          // $ 3.100

@@ -1,0 +1,48 @@
+table dim_veterinario
+	lineageTag: aa520a06-cf7f-40fd-bd30-15567a591d17
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: f1335228-71a3-4a4f-aa39-59d40e85ed06
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column nombre
+		dataType: string
+		lineageTag: 36436ca0-13f4-4a65-91ca-5c2db49acdf3
+		summarizeBy: none
+		sourceColumn: nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column especialidad
+		dataType: string
+		lineageTag: fd7fe7d3-d4cb-4707-8f26-58bdc99a80d7
+		summarizeBy: none
+		sourceColumn: especialidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column rol
+		dataType: string
+		lineageTag: 138e420d-dd6e-4530-a22e-d485bcedeb7e
+		summarizeBy: none
+		sourceColumn: rol
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_veterinario = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\dim_veterinario.csv"),[Delimiter=";", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"id", Int64.Type}, {"nombre", type text}, {"especialidad", type text}, {"rol", type text}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,144 @@
+table h_turnos
+	lineageTag: f5d487f1-1f6b-4240-ac3c-e12f5b4e0823
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: 2f07a942-7791-4346-8d48-045013e5185c
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column mascotaId
+		dataType: int64
+		formatString: 0
+		lineageTag: fe4bdf4e-469a-4b97-bb20-50928f5451bf
+		summarizeBy: none
+		sourceColumn: mascotaId
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: bda0c6e7-be4c-461c-9445-d3ed91a33881
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column hora
+		dataType: dateTime
+		formatString: hh:nn
+		lineageTag: 2e0ed571-17c8-40fd-ae47-4c44ecd683ff
+		summarizeBy: none
+		sourceColumn: hora
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column motivo
+		dataType: string
+		lineageTag: c09d743e-843f-4ef4-b856-bfd55ae95c69
+		summarizeBy: none
+		sourceColumn: motivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column vetId
+		dataType: int64
+		formatString: 0
+		lineageTag: c22c5805-edbc-4e73-8997-a64a7e253605
+		summarizeBy: none
+		sourceColumn: vetId
+
+		annotation SummarizationSetBy = Automatic
+
+	column estado
+		dataType: string
+		lineageTag: 7812002a-1b77-4893-a9dc-7e51acae4235
+		summarizeBy: none
+		sourceColumn: estado
+
+		annotation SummarizationSetBy = Automatic
+
+	column llegada
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: e3865fc8-4801-484e-b982-fa9435f76e3d
+		summarizeBy: none
+		sourceColumn: llegada
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column sena
+		dataType: int64
+		formatString: 0
+		lineageTag: 9d8e07ef-6008-4f43-84cb-c9a1c1922307
+		summarizeBy: sum
+		sourceColumn: sena
+
+		annotation SummarizationSetBy = Automatic
+
+	column clienteId
+		dataType: int64
+		formatString: 0
+		lineageTag: ebb4bfd8-bfde-4128-8894-d8ead8d060f5
+		summarizeBy: count
+		sourceColumn: clienteId
+
+		annotation SummarizationSetBy = Automatic
+
+	column duracion
+		dataType: int64
+		formatString: 0
+		lineageTag: 5d108e6d-d57c-4336-a4b9-ce44b2ae2de7
+		summarizeBy: sum
+		sourceColumn: duracion
+
+		annotation SummarizationSetBy = Automatic
+
+	column franja
+		dataType: string
+		lineageTag: d6097b03-c0c3-454c-8b98-255688fee49d
+		summarizeBy: none
+		sourceColumn: franja
+
+		annotation SummarizationSetBy = Automatic
+
+	column demora
+		dataType: int64
+		formatString: 0
+		lineageTag: 8e8357ef-1d0c-4580-85c9-7ed10516874a
+		summarizeBy: sum
+		sourceColumn: demora
+
+		annotation SummarizationSetBy = Automatic
+
+	column conSena
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: e95bd2a1-8042-4cbb-b64e-6c75e259a22c
+		summarizeBy: none
+		sourceColumn: conSena
+
+		annotation SummarizationSetBy = Automatic
+
+	partition h_turnos = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\h_turnos.csv"),[Delimiter=";", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"id", Int64.Type}, {"mascotaId", Int64.Type}, {"fecha", type date}, {"hora", type time}, {"motivo", type text}, {"vetId", Int64.Type}, {"estado", type text}, {"llegada", type time}, {"sena", Int64.Type}, {"clienteId", Int64.Type}, {"duracion", Int64.Type}, {"franja", type text}, {"demora", Int64.Type}, {"conSena", type logical}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

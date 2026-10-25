@@ -1,0 +1,95 @@
+table h_esperas
+	lineageTag: d6bf05f8-2907-4758-986e-3bbd0a71691b
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: 539449af-286c-4f97-ab81-e907194a317b
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column clienteId
+		dataType: int64
+		formatString: 0
+		lineageTag: 116fa2ce-f06f-4a86-8215-9f18099d93d0
+		summarizeBy: count
+		sourceColumn: clienteId
+
+		annotation SummarizationSetBy = Automatic
+
+	column mascotaId
+		dataType: int64
+		formatString: 0
+		lineageTag: 7f9a6812-55df-4def-a22c-dabf27ed2b68
+		summarizeBy: none
+		sourceColumn: mascotaId
+
+		annotation SummarizationSetBy = Automatic
+
+	column motivo
+		dataType: string
+		lineageTag: 1b1ed664-87e7-4657-8ea5-e35dc7f3787c
+		summarizeBy: none
+		sourceColumn: motivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ebf1dca8-7dee-4990-b4b8-b948d1dabfe0
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column vetId
+		dataType: int64
+		formatString: 0
+		lineageTag: 61720b00-3f9b-4e42-b01d-08096e99beb4
+		summarizeBy: count
+		sourceColumn: vetId
+
+		annotation SummarizationSetBy = Automatic
+
+	column avisado
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d138ef6a-6487-49b6-b9c5-811a53ff6e82
+		summarizeBy: none
+		sourceColumn: avisado
+
+		variation Variation
+			isDefault
+			relationship: fdbfd883-ba3f-4219-98ec-baaf501ee043
+			defaultHierarchy: LocalDateTable_817ff322-ecb0-4802-9f72-4ea9e604ec0f.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column avisada
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 32dc3241-42a5-4039-b9af-aaddb8f6da2b
+		summarizeBy: none
+		sourceColumn: avisada
+
+		annotation SummarizationSetBy = Automatic
+
+	partition h_esperas = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\h_esperas.csv"),[Delimiter=";", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"id", Int64.Type}, {"clienteId", Int64.Type}, {"mascotaId", Int64.Type}, {"motivo", type text}, {"fecha", type date}, {"vetId", Int64.Type}, {"avisado", type date}, {"avisada", type logical}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

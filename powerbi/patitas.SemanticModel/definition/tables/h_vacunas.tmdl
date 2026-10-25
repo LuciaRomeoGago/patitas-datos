@@ -1,0 +1,113 @@
+table h_vacunas
+	lineageTag: 6eb6281a-d2e2-4f89-8e20-b2ed816d1696
+
+	column mascotaId
+		dataType: int64
+		formatString: 0
+		lineageTag: c4eb0927-a759-4aab-a3ca-d38d58c1d924
+		summarizeBy: none
+		sourceColumn: mascotaId
+
+		annotation SummarizationSetBy = Automatic
+
+	column nombre
+		dataType: string
+		lineageTag: 13317302-b2a6-4a3d-b74b-a85ab8bf37ef
+		summarizeBy: none
+		sourceColumn: nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column aplicada
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c154a24b-397d-4e3f-b7e6-a45faca306c7
+		summarizeBy: none
+		sourceColumn: aplicada
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column proxima
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 855dd3ff-1daa-48e3-b139-1e46c70f974d
+		summarizeBy: none
+		sourceColumn: proxima
+
+		variation Variation
+			isDefault
+			relationship: 049b4d69-c3d8-48a4-95c7-e3d7f10d13f7
+			defaultHierarchy: LocalDateTable_68e33b19-9939-4330-8dda-bd892b2c4287.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0d13d495-893b-4d7d-96fb-2df0dc4be1bb
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ultima
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 751a5473-5434-4f52-8a6a-27efd6e06c33
+		summarizeBy: none
+		sourceColumn: ultima
+
+		annotation SummarizationSetBy = Automatic
+
+	column vencida
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: d5f9db87-b897-495b-9b1f-800ba5d54a8d
+		summarizeBy: none
+		sourceColumn: vencida
+
+		annotation SummarizationSetBy = Automatic
+
+	column conTurno
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: e341af9c-2643-4ea3-a818-ad0ebc61a959
+		summarizeBy: none
+		sourceColumn: conTurno
+
+		annotation SummarizationSetBy = Automatic
+
+	column avisar
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 0c653440-8b3d-44b6-9b31-f63869923155
+		summarizeBy: none
+		sourceColumn: avisar
+
+		annotation SummarizationSetBy = Automatic
+
+	column diasVencida
+		dataType: int64
+		formatString: 0
+		lineageTag: 36f4271b-27fb-4b15-9a58-564c0292d5df
+		summarizeBy: sum
+		sourceColumn: diasVencida
+
+		annotation SummarizationSetBy = Automatic
+
+	partition h_vacunas = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents("C:\Users\Lucia\Desktop\Trabajo prog\Veterinaria\patitas-datos\datos\modelo\h_vacunas.csv"),[Delimiter=";", Columns=10, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos",{{"mascotaId", Int64.Type}, {"nombre", type text}, {"aplicada", type date}, {"proxima", type date}, {"id", Int64.Type}, {"ultima", type logical}, {"vencida", type logical}, {"conTurno", type logical}, {"avisar", type logical}, {"diasVencida", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

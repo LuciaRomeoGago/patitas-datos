@@ -1,0 +1,122 @@
+table Medidas
+	lineageTag: 536f33ea-81d4-4d17-aa5b-de831e604679
+
+	measure Ocupación = CALCULATE ( DIVIDE ( SUM ( h_agenda[minutosOcupados] ), SUM ( h_agenda[minutosDisponibles] ) ), dim_fecha[pasado] = TRUE () )
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: 66b534ec-3682-43d4-84aa-6c8d371e9429
+
+	measure 'Turnos atendidos' = CALCULATE ( COUNTROWS ( h_turnos ), h_turnos[estado] = "atendido" )
+		formatString: #,0
+		lineageTag: eca93fb9-ff99-418b-a92e-061189dcadf8
+
+	measure 'Demora promedio (min)' = AVERAGE ( h_turnos[demora] )
+		formatString: 0.0
+		lineageTag: b9d99218-29d5-4c93-9281-537821a8c412
+
+	measure 'Llegan 15 min tarde o más' = DIVIDE ( CALCULATE ( COUNTROWS ( h_turnos ), h_turnos[demora] >= 15 ), CALCULATE ( COUNTROWS ( h_turnos ), NOT ISBLANK ( h_turnos[demora] ) ) )
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: 44208df7-e7ed-4129-8018-16d8f7ed37ad
+
+	measure 'Anotados en lista de espera' = COUNTROWS ( h_esperas ) + 0
+		formatString: #,0
+		lineageTag: c5850764-af03-4dbe-a596-fb4f9d75b1dd
+
+	measure 'Avisados de la lista' = DIVIDE ( CALCULATE ( COUNTROWS ( h_esperas ), h_esperas[avisada] = TRUE () ), COUNTROWS ( h_esperas ) )
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: 474473b4-6a30-43e6-a4b5-6d9151f123d5
+
+	measure 'Vacunas aplicadas' = CALCULATE ( COUNTROWS ( h_vacunas ), dim_fecha[pasado] = TRUE () )
+		formatString: #,0
+		lineageTag: c96ae5c8-57ca-4ddf-9ebd-fb05f58d48e9
+
+	measure 'Vacunas para avisar' = CALCULATE ( COUNTROWS ( h_vacunas ), h_vacunas[avisar] = TRUE (), REMOVEFILTERS ( dim_fecha ) ) + 0
+		formatString: #,0
+		lineageTag: b93c3d6a-dc8a-4594-8b4e-1bc7d6114a8b
+
+	measure 'Días vencida' = CALCULATE ( MAX ( h_vacunas[diasVencida] ), h_vacunas[avisar] = TRUE (), REMOVEFILTERS ( dim_fecha ) )
+		formatString: #,0
+		lineageTag: 99f95b0a-3946-4337-add6-85aca2351ea9
+
+	measure Ventas = SUM ( h_ventas[importe] )
+		formatString: \$\ #,0;-\$\ #,0;\$\ #,0
+		lineageTag: 87b06d70-5373-4c0e-a09d-e247542c3a17
+
+	measure 'Unidades vendidas' = SUM ( h_ventas[cantidad] )
+		formatString: #,0
+		lineageTag: de9b6cdf-e6de-4dae-bc59-97ee51370acb
+
+	measure 'Recompras a tiempo' = CALCULATE ( COUNTROWS ( h_ventas ), h_ventas[recompra] = "A tiempo" )
+		formatString: #,0
+		lineageTag: 0c10dd28-b4fe-47c5-9240-e0c9b7a4e6d2
+
+	measure 'Recompras con atraso' = CALCULATE ( COUNTROWS ( h_ventas ), h_ventas[recompra] = "Tarde" )
+		formatString: #,0
+		lineageTag: 3bead7ec-47d8-4ab2-86ae-f933ce2f2a04
+
+	measure 'Recompras tarde' = DIVIDE ( [Recompras con atraso], [Recompras a tiempo] + [Recompras con atraso] )
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: cc4ef075-e3ef-4aa6-9a4b-128c97f92848
+
+	measure 'Días sin stock' = CALCULATE ( DISTINCTCOUNT ( h_stock[fecha] ), h_stock[stockDespues] = 0 )
+		formatString: #,0
+		lineageTag: 6cba6513-2a8e-47c5-bac6-d5ae0134382c
+
+	measure 'Productos bajo el mínimo' = CALCULATE ( COUNTROWS ( dim_producto ), dim_producto[bajoMinimo] = TRUE () ) + 0
+		formatString: #,0
+		lineageTag: e6e253bd-f00f-4a87-9507-24564b7663fe
+
+	measure 'Lotes por vencer en 60 días' = CALCULATE ( COUNTROWS ( h_stock ), h_stock[venceEn60] = TRUE (), REMOVEFILTERS ( dim_fecha ) ) + 0
+		formatString: #,0
+		lineageTag: 56a6c817-0e20-491d-b3f3-65c29e3fcdce
+
+	measure 'Stock actual' = SUM ( dim_producto[stockActual] )
+		formatString: #,0
+		lineageTag: 21ad32e6-ec89-4536-94b2-0403d711971f
+
+	measure Mínimo = SUM ( dim_producto[minimo] )
+		formatString: #,0
+		lineageTag: c180749b-8e55-453f-bfb7-618c5186e020
+
+	measure 'Estado del stock' = IF ( HASONEVALUE ( dim_producto[id] ), IF ( SELECTEDVALUE ( dim_producto[bajoMinimo] ), "Reponer", "Bien" ) )
+		lineageTag: e3a3284d-6a15-4690-8ee4-26a5bf5751b7
+
+	measure Cobrado = CALCULATE ( SUM ( h_caja[importe] ), h_caja[esCobro] = TRUE () )
+		formatString: \$\ #,0;-\$\ #,0;\$\ #,0
+		lineageTag: bdcb9ab4-ca27-4986-ae98-2a99ea7afe24
+
+	measure Gastos = - CALCULATE ( SUM ( h_caja[importe] ), h_caja[tipo] = "egreso" )
+		formatString: \$\ #,0;-\$\ #,0;\$\ #,0
+		lineageTag: 907e0430-2144-48d3-a7c7-c23b5b51472f
+
+	measure 'Señas cobradas' = CALCULATE ( SUM ( h_caja[importe] ), h_caja[tipo] = "sena" )
+		formatString: \$\ #,0;-\$\ #,0;\$\ #,0
+		lineageTag: 0b6d58ba-dacf-425f-b450-c6b6d37c8bda
+
+	measure 'Cierres con diferencia' = CALCULATE ( COUNTROWS ( h_cierres ), h_cierres[diferencia] <> 0 ) + 0
+		formatString: #,0
+		lineageTag: 54dc1fd2-0dda-40bf-8a33-7bfa313171f3
+
+	measure 'Diferencia neta de caja' = SUM ( h_cierres[diferencia] )
+		formatString: \$\ #,0;-\$\ #,0;\$\ #,0
+		lineageTag: 57c6bdec-24e6-4591-bf22-a74a6a393732
+
+	measure Sobrante = CALCULATE ( SUM ( h_cierres[diferencia] ), h_cierres[diferencia] > 0 )
+		formatString: \$\ #,0;-\$\ #,0;\$\ #,0
+		lineageTag: d65c739c-881b-4805-95c6-482f7d9a14e8
+
+	measure Faltante = CALCULATE ( SUM ( h_cierres[diferencia] ), h_cierres[diferencia] < 0 )
+		formatString: \$\ #,0;-\$\ #,0;\$\ #,0
+		lineageTag: 7173db18-5ef8-43a8-b73e-b8c5554e44e7
+
+	partition Medidas = m
+		mode: import
+		source =
+				let
+				    Origen = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Columna1 = _t]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(Origen,{{"Columna1", type text}}),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Tipo cambiado",{"Columna1"})
+				in
+				    #"Columnas quitadas"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,83 @@
+relationship fdbfd883-ba3f-4219-98ec-baaf501ee043
+	joinOnDateBehavior: datePartOnly
+	fromColumn: h_esperas.avisado
+	toColumn: LocalDateTable_817ff322-ecb0-4802-9f72-4ea9e604ec0f.Date
+
+relationship c2ef3766-b357-4690-953e-8ed00992d48b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: h_stock.vence
+	toColumn: LocalDateTable_a51c8dae-3ef2-42ac-9def-4531622d4c80.Date
+
+relationship 049b4d69-c3d8-48a4-95c7-e3d7f10d13f7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: h_vacunas.proxima
+	toColumn: LocalDateTable_68e33b19-9939-4330-8dda-bd892b2c4287.Date
+
+relationship f24c4ffe-0dba-0d6b-ff7d-155185542b28
+	fromColumn: h_turnos.fecha
+	toColumn: dim_fecha.fecha
+
+relationship e3c3d1c0-8c07-1182-0766-3151677b89a0
+	fromColumn: h_agenda.fecha
+	toColumn: dim_fecha.fecha
+
+relationship ae70fee7-e181-76ef-f482-0c17b2d696cd
+	fromColumn: h_vacunas.aplicada
+	toColumn: dim_fecha.fecha
+
+relationship 9f71f4da-d384-8c01-b944-4d33a3f702a6
+	fromColumn: h_ventas.fecha
+	toColumn: dim_fecha.fecha
+
+relationship 65f44959-04e5-ca68-590f-576a94c85103
+	fromColumn: h_stock.fecha
+	toColumn: dim_fecha.fecha
+
+relationship 278ae113-cb15-59a9-1e5f-a9980f1ed198
+	fromColumn: h_caja.fecha
+	toColumn: dim_fecha.fecha
+
+relationship beb32b0d-9b32-cacc-e3a8-cf3b3a21626c
+	fromColumn: h_cierres.fecha
+	toColumn: dim_fecha.fecha
+
+relationship 49426e6d-6218-787c-f2f0-186604f621bd
+	fromColumn: h_esperas.fecha
+	toColumn: dim_fecha.fecha
+
+relationship 72bfb55e-e43d-305b-ffaa-53f66cff1791
+	fromColumn: dim_mascota.clienteId
+	toColumn: dim_cliente.id
+
+relationship 1004ccd5-5939-6ba2-7330-cea0b416b665
+	fromColumn: h_ventas.clienteId
+	toColumn: dim_cliente.id
+
+relationship 8495d111-0a2e-8491-5f42-fb8ffd62247a
+	fromColumn: h_turnos.mascotaId
+	toColumn: dim_mascota.id
+
+relationship f5fa6aba-b2a6-226f-eee2-ac4c19883ba7
+	fromColumn: h_vacunas.mascotaId
+	toColumn: dim_mascota.id
+
+relationship 403ffb2f-8c08-90c3-b074-1a16da855d1c
+	fromColumn: h_esperas.mascotaId
+	toColumn: dim_mascota.id
+
+relationship 77d9d542-28da-4849-4747-a052c563f9fc
+	fromColumn: h_turnos.vetId
+	toColumn: dim_veterinario.id
+
+relationship 50e38c42-6f6c-b897-9ecc-85e1348343b8
+	fromColumn: h_agenda.vetId
+	toColumn: dim_veterinario.id
+
+relationship bbe8a358-a3ff-83a3-35f7-a09c4a9d46cf
+	fromColumn: h_ventas.productoId
+	toColumn: dim_producto.id
+
+relationship fb854d27-e879-0bb6-c6b3-a68719a62621
+	fromColumn: h_stock.productoId
+	toColumn: dim_producto.id
+

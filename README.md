@@ -50,7 +50,7 @@ Para importarlos en Power BI: *Obtener datos → Texto/CSV*, con origen *65001: 
 | Tabla | Una fila por | Se relaciona con |
 |---|---|---|
 | `dim_fecha` | día | todas las tablas de hechos, por la fecha |
-| `dim_cliente` | cliente | `h_turnos`, `h_ventas`, `h_esperas` (`clienteId`) y `dim_mascota` |
+| `dim_cliente` | cliente | `dim_mascota` y `h_ventas` (`clienteId`); a los turnos llega por la mascota |
 | `dim_mascota` | mascota | `h_turnos`, `h_vacunas`, `h_esperas` (`mascotaId`) |
 | `dim_veterinario` | integrante del equipo | `h_turnos`, `h_agenda` (`vetId`) |
 | `dim_producto` | producto (con `stockActual` y `bajoMinimo`) | `h_ventas`, `h_stock` (`productoId`) |
@@ -58,7 +58,7 @@ Para importarlos en Power BI: *Obtener datos → Texto/CSV*, con origen *65001: 
 | `h_agenda` | día hábil y veterinario (`minutosOcupados`, `minutosDisponibles`) | |
 | `h_vacunas` | dosis aplicada (`ultima`, `vencida`, `conTurno`, `avisar`) | `dim_fecha` por `aplicada` |
 | `h_ventas` | compra (`importe`, `recompra`: Primera, A tiempo, Tarde) | |
-| `h_stock` | movimiento de stock (`stockDespues`, `vence`, `venceEn60`) | |
+| `h_stock` | movimiento de stock (`stockDespues`; en las entradas, `quedan` del lote y `venceEn60`) | |
 | `h_caja` | movimiento de caja (`importe` con signo, `esCobro`) | |
 | `h_cierres` | cierre de caja (`diferencia`) | |
 | `h_esperas` | anotación en la lista de espera (`avisada`) | |
@@ -67,3 +67,9 @@ Para importarlos en Power BI: *Obtener datos → Texto/CSV*, con origen *65001: 
 - La ocupación es `SUM(h_agenda[minutosOcupados]) / SUM(h_agenda[minutosDisponibles])`.
 - La `demora` es lo que tardó en llegar respecto de la hora del turno. Si es negativa, llegó antes.
 - `avisar` marca las vacunas vencidas cuya mascota no tiene un turno de vacuna pedido: son los clientes a quienes conviene avisarles.
+
+## Tablero
+
+El tablero es el proyecto de Power BI `powerbi/patitas.pbip` (se abre con Power BI Desktop). Las capturas de las cuatro páginas y del modelo están en `capturas/`.
+
+En `powerbi/` también están el tema con la paleta de la app (`tema-patitas.json`), las medidas en DAX con el valor que tiene que dar cada una (`medidas.dax`) y el armado de las cuatro páginas, con la decisión de cada una (`ARMADO.md`).
